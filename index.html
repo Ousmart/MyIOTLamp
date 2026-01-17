@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESP8266 Control</title> 
+    <style>
+        body { font-family: sans-serif; text-align: center; background: #f4f4f9; padding: 20px; }
+        .card { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); display: inline-block; min-width: 250px; }
+        #value { font-size: 4rem; font-weight: bold; color: #007bff; margin: 20px 0; }
+        .btn { padding: 15px 30px; font-size: 1.2rem; cursor: pointer; border: none; border-radius: 8px; color: white; transition: 0.3s; }
+        .on { background: #28a745; }
+        .off { background: #dc3545; }
+        .status { font-size: 0.9rem; color: #666; }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <h2>ESP8266 Monitoring</h2>
+        <div id="status" class="status">Connecting...</div>
+        
+        <div id="value">0</div>
+
+        <button class="btn on" onclick="sendCommand('LED_ON')">Turn ON</button>
+        <button class="btn off" onclick="sendCommand('LED_OFF')">Turn OFF</button>
+    </div>
+
+    <script>
+        // เปลี่ยน URL เป็นของ Render ของคุณ
+        const socketUrl = 'ws://192.168.1.105:8001/ws'; 
+        let socket;
+
+        function connect() {
+            socket = new WebSocket(socketUrl);
+
+            socket.onopen = () => {
+                document.getElementById('status').innerText = 'Connected ✅';
+                document.getElementById('status').style.color = 'green';
+            };
+
+            socket.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                if (data.value !== undefined) {
+                    document.getElementById('value').innerText = data.value;
+                }
+            };
+
+            socket.onclose = () => {
+                document.getElementById('status').innerText = 'Disconnected ❌ (Retrying...)';
+                document.getElementById('status').style.color = 'red';
+                setTimeout(connect, 3000); // พยายามต่อใหม่ทุก 3 วินาที
+            };
+        }
+
+        function sendCommand(msg) {
+            if (socket && socket.readyState === WebSocket.OPEN) {
+                socket.send(msg);
+                console.log("Sent:", msg);
+            }
+        }
+
+        connect(); // เริ่มการเชื่อมต่อ
+    </script>
+</body>
+</html>
