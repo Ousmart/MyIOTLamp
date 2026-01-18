@@ -2,3 +2,4 @@
 __pycache__/
 .qodo/
 node_modules/
+.env
