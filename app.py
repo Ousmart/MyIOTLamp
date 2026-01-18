@@ -75,6 +75,10 @@ active_connections = {}
 
 # --- Routes ---
 
+@app.get("/")
+def home():
+    return "Hello"
+
 @app.post("/signup")
 def signup(data: SignupRequest):
     conn = get_db_connection()
@@ -134,6 +138,7 @@ async def websocket_endpoint(websocket: WebSocket):
                     break
 
             elif "target_id" in message:
+                print(f"Received command for {message['target_id']}: {message['cmd']}")
                 target_id = message["target_id"]
                 if target_id in active_connections:
                     await active_connections[target_id].send_text(json.dumps(message))
