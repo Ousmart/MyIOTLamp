@@ -5,10 +5,11 @@ from sqlalchemy import create_engine, Column, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from pydantic import BaseModel
+import os
 
-# 1. Database Configuration
-# เปลี่ยน PASSWORD ให้ถูกต้องตามที่คุณตั้งไว้ใน Aiven
-DATABASE_URL = "mysql+pymysql://avnadmin:AVNS_VCCuHqaHD4jInn-Bd4m@mysql-easyiot-1707-uthaikhanthamongkol-3f2e.j.aivencloud.com:12362/defaultdb?ssl-mode=REQUIRED"
+# ดึงค่า DATABASE_URL จาก Environment Variable
+# หากไม่มีค่า ให้ใช้ค่าว่าง (เพื่อไม่ให้พังตอนรัน local แต่ต้องระวัง)
+DATABASE_URL = os.getenv("DATABASE_URL")
 
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
