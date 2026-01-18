@@ -6,7 +6,7 @@ function App() {
   
   // เปลี่ยน URL เป็นของ Render เมื่อ Deploy แล้ว (เช่น wss://your-app.onrender.com/ws)
   // ตอนทดสอบ Local ให้ใช้ ws://127.0.0.1:8000/ws
-  const socketUrl = 'ws://192.168.1.105:8001/ws';
+  const socketUrl = 'wss://myiotlamp.onrender.com/ws';
 
   const { lastJsonMessage, readyState } = useWebSocket(socketUrl, {
     onOpen: () => console.log('Connected to FastAPI'),
